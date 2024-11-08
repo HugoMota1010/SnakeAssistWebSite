@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Automatize seu atendimento ao cliente com o SnakeAssist. Chatbots inteligentes para aumentar vendas e satisfação.">
+    <title>SnakeAssist - Chatbots Inteligentes</title>
+    <link rel="icon" type="image/png" sizes="100x100" href="SnakeAssist_logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://hcaptcha.com/1/api.js" async defer></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#eff6ff",
+                100: "#dbeafe",
+                200: "#bfdbfe",
+                300: "#93c5fd",
+                400: "#60a5fa",
+                500: "#3b82f6",
+                600: "#2563eb",
+                700: "#1d4ed8",
+                800: "#1e40af",
+                900: "#1e3a8a",
+                950: "#172554",
+              },
+            },
+          },
+          fontFamily: {
+            body: [
+              "Inter",
+              "ui-sans-serif",
+              "system-ui",
+              "-apple-system",
+              "system-ui",
+              "Segoe UI",
+              "Roboto",
+              "Helvetica Neue",
+              "Arial",
+              "Noto Sans",
+              "sans-serif",
+              "Apple Color Emoji",
+              "Segoe UI Emoji",
+              "Segoe UI Symbol",
+              "Noto Color Emoji",
+            ],
+            sans: [
+              "Inter",
+              "ui-sans-serif",
+              "system-ui",
+              "-apple-system",
+              "system-ui",
+              "Segoe UI",
+              "Roboto",
+              "Helvetica Neue",
+              "Arial",
+              "Noto Sans",
+              "sans-serif",
+              "Apple Color Emoji",
+              "Segoe UI Emoji",
+              "Segoe UI Symbol",
+              "Noto Color Emoji",
+            ],
+          },
+        },
+      };
+    </script>
+    <script>
+      tailwind.config = {
+          darkMode: 'class',
+          theme: {
+              extend: {
+                  animation: {
+                      blob: "blob 7s infinite",
+                  },
+                  keyframes: {
+                      blob: {
+                          "0%": {
+                              transform: "translate(0px, 0px) scale(1)",
+                          },
+                          "33%": {
+                              transform: "translate(30px, -50px) scale(1.1)",
+                          },
+                          "66%": {
+                              transform: "translate(-20px, 20px) scale(0.9)",
+                          },
+                          "100%": {
+                              transform: "tranlate(0px, 0px) scale(1)",
+                          },
+                      },
+                  },
+              },
+          },
+      }
+  </script>
+
+    <!-- Style CSS -->
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+      /* Estilo para o dispositivo móvel */
+      .mobile-device {
+        width: 300px;
+        height: 600px;
+        background-color: #f0f0f0;
+        border-radius: 30px;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        border: 4px solid rgb(0, 0, 0);
+      }
+
+      .mobile-screen {
+        width: 100%;
+        height: calc(100% - 60px);
+        background-color: white;
+        overflow-y: auto;
+        padding: 20px;
+      }
+
+      .mobile-notch {
+        width: 100px;
+        height: 15px;
+        background-color: #000;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+      }
+
+      /* Animação para a conversa do chatbot */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .chat-message {
+        animation: fadeIn 1s ease-out forwards;
+        opacity: 0;
+      }
+
+      .chat-message:nth-child(1) {
+        animation-delay: 1s;
+      }
+      .chat-message:nth-child(2) {
+        animation-delay: 2s;
+      }
+      .chat-message:nth-child(3) {
+        animation-delay: 3s;
+      }
+      .chat-message:nth-child(4) {
+        animation-delay: 4s;
+      }
+      button:hover {
+        transition: background-color 0.3s ease;
+      }
+      input:valid {
+        border-color: green;
+      }
+
+      input:invalid {
+        border-color: red;
+      }
+
+      /* Radio estilo*/ 
+.radio-buttons-container {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.radio-button {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+}
+
+.radio-button__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.radio-button__label {
+  display: inline-block;
+  padding-left: 30px;
+  margin-bottom: 10px;
+  position: relative;
+  font-size: 16px;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.radio-button__custom {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #555;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.radio-button__input:checked + .radio-button__label .radio-button__custom {
+  transform: translateY(-50%) scale(0.9);
+  border: 5px solid #4c8bf5;
+  color: #4c8bf5;
+}
+
+.radio-button__input:checked + .radio-button__label {
+  color: #4c8bf5;
+}
+
+.radio-button__label:hover .radio-button__custom {
+  transform: translateY(-50%) scale(1.2);
+  border-color: #4c8bf5;
+  box-shadow: 0 0 10px #4c8bf580;
+}
+
+    </style>
+    <style type="text/tailwindcss">
+      @layer utilities {
+          .animation-delay-2000 {
+              animation-delay: 2s;
+          }
+          .animation-delay-4000 {
+              animation-delay: 4s;
+          }
+      }
+  </style>
+  </head>
+
+  <!-- Section Navbar -->
+
+  <body
+    id="Navbar" class="bg-blue-50 dark:bg-gray-900 text-gray-900 dark:text-white font-body"
+  >
+    <header
+      class="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600"
+    >
+      <nav
+        class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
+      >
+        <a href="#Navbar" class="flex items-center">
+          <span
+            class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
+            >SnakeAssist</span
+          >
+        </a>
+        <div class="flex md:order-2">
+          <button
+            id="darkModeToggle"
+            type="button"
+            class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 inline-flex items-center"
+          >
+            <svg
+              id="darkIcon"
+              class="hidden w-5 h-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+              ></path>
+            </svg>
+            <svg
+              id="lightIcon"
+              class="w-5 h-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </button>
+          <button
+            data-collapse-toggle="navbar-sticky"
+            type="button"
+            class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            aria-controls="navbar-sticky"
+            aria-expanded="false"
+          >
+            <span class="sr-only">Abrir menu principal</span>
+            <svg
+              class="w-6 h-6"
+              aria-hidden="true"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <div
+          class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+          id="navbar-sticky"
+        >
+          <ul
+            class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
+          >
+            <li>
+              <a
+                href="#features"
+                class="smky-btn3 relative hover:text-[#fff] py-2 px-6 after:absolute after:h-1 after:hover:h-[100%] transition-all duration-500 hover:transition-all hover:duration-500 after:transition-all after:duration-500 after:hover:transition-all after:hover:duration-500 overflow-hidden z-20 after:z-[-20] after:bg-[#818cf8] after:rounded-2xl after:w-full after:bottom-0 after:left-0 md:dark:hover:bg-transparent dark:border-gray-700"
+                >Recursos</a
+              >
+            </li>
+            <li>
+              <a
+                href="#how-it-works"
+                class="smky-btn3 relative hover:text-[#fff] py-2 px-6 after:absolute after:h-1 after:hover:h-[100%] transition-all duration-500 hover:transition-all hover:duration-500 after:transition-all after:duration-500 after:hover:transition-all after:hover:duration-500 overflow-hidden z-20 after:z-[-20] after:bg-[#818cf8] after:rounded-2xl after:w-full after:bottom-0 after:left-0 md:dark:hover:bg-transparent dark:border-gray-700"
+                >Como Funciona</a
+              >
+            </li>
+            <li>
+              <a
+                href="#pricing"
+                class="smky-btn3 relative hover:text-[#fff] py-2 px-6 after:absolute after:h-1 after:hover:h-[100%] transition-all duration-500 hover:transition-all hover:duration-500 after:transition-all after:duration-500 after:hover:transition-all after:hover:duration-500 overflow-hidden z-20 after:z-[-20] after:bg-[#818cf8] after:rounded-2xl after:w-full after:bottom-0 after:left-0 md:dark:hover:bg-transparent dark:border-gray-700"
+                >Preços</a
+              >
+            </li>
+            <li>
+              <a
+                href="#contact"
+                class="smky-btn3 relative hover:text-[#fff] py-2 px-6 after:absolute after:h-1 after:hover:h-[100%] transition-all duration-500 hover:transition-all hover:duration-500 after:transition-all after:duration-500 after:hover:transition-all after:hover:duration-500 overflow-hidden z-20 after:z-[-20] after:bg-[#818cf8] after:rounded-2xl after:w-full after:bottom-0 after:left-0 md:dark:hover:bg-transparent dark:border-gray-700"
+                >Contato</a
+              >
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Section hero -->
+
+    <main class="pt-20">
+      <body id="hero" class="relative overflow-hidden bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
+        <div class="py-16 px-4 mx-auto max-w-screen-xl text-center lg:py-24 lg:px-12 relative z-10">
+            <h1 class="mb-8 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+                Transforme seu atendimento com 
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+                    SnakeAssist Chatbots
+                </span>
+            </h1>
+            <p class="mb-12 text-lg font-normal text-gray-600 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-300">
+                Automatize seu suporte, aumente as vendas e melhore a satisfação dos seus clientes com chatbots inteligentes e personalizados.
+            </p>
+            <div class="flex flex-col mb-8 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
+                <a href="#contact" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 transition-all duration-300 ease-in-out transform hover:scale-105">
+                    Começar Gratuitamente
+                    <svg class="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
+            <div class="absolute top-1/2 left-1/4 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob dark:mix-blend-soft-light"></div>
+            <div class="absolute top-1/3 right-1/4 w-64 h-64 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000 dark:mix-blend-soft-light"></div>
+            <div class="absolute bottom-1/2 left-1/2 w-64 h-64 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000 dark:mix-blend-soft-light"></div>
+        </div>
+      </body>
+        </main>
+      
+
+      <!-- Section Recursos do SnakeAssist -->
+
+      <section id="features" class="bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-gray-800 py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
+              Recursos da <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">SnakeAssist</span>
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Descubra os principais recursos que fazem da SnakeAssist a escolha ideal para impulsionar o atendimento da sua empresa.
+            </p>
+          </div>
+      
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            <!-- Feature 1 -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+              <div class="p-8">
+                <div class="text-center mb-6">
+                  <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 0l-2 2a1 1 0 101.414 1.414L8 10.414l1.293 1.293a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                  </div>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+                  Inteligência Artificial Avançada
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 text-center">
+                  Nossos chatbots utilizam IA de ponta para entender e responder às perguntas dos clientes com precisão.
+                </p>
+              </div>
+            </div>
+      
+            <!-- Feature 2 -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+              <div class="p-8">
+                <div class="text-center mb-6">
+                  <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"></path>
+                    </svg>
+                  </div>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+                  Personalização Completa
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 text-center">
+                  Adapte o chatbot à sua marca, personalizando respostas, fluxos de conversa e aparência.
+                </p>
+              </div>
+            </div>
+      
+            <!-- Feature 3 -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+              <div class="p-8">
+                <div class="text-center mb-6">
+                  <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                      <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path>
+                    </svg>
+                  </div>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+                  Integração Multicanal
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 text-center">
+                  Conecte-se com seus clientes onde eles estiverem: site, WhatsApp, Facebook, e mais.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Chatbot -->
+
+      <section id="chatbot" class="bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
+              Experimente a <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">SnakeAssist</span>
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Veja como nosso chatbot inteligente pode transformar seu atendimento ao cliente.
+            </p>
+          </div>
+      
+          <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
+            <div class="w-full lg:w-1/2">
+              <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden max-w-sm mx-auto">
+                <div class="bg-gray-200 dark:bg-gray-700 h-6 flex items-center justify-center">
+                  <div class="w-16 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                </div>
+                <div class="p-6 space-y-4">
+                  <div class="flex justify-start">
+                    <div class="bg-blue-500 text-white rounded-2xl p-3 max-w-xs">
+                      <p>Olá! Como posso ajudar você hoje?</p>
+                    </div>
+                  </div>
+                  <div class="flex justify-end">
+                    <div class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-2xl p-3 max-w-xs">
+                      <p>Oi! Gostaria de saber mais sobre os planos da SnakeAssist.</p>
+                    </div>
+                  </div>
+                  <div class="flex justify-start">
+                    <div class="bg-blue-500 text-white rounded-2xl p-3 max-w-xs">
+                      <p>Claro! Temos três planos principais: Starter, Empresa e Personalizado. Qual deles você gostaria de conhecer melhor?</p>
+                    </div>
+                  </div>
+                  <div class="flex justify-end">
+                    <a href="#pricing" class="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-2xl p-3 max-w-xs hover:bg-gray-200 dark:hover:bg-gray-600 transition duration-300">
+                      <p>Pode me falar sobre o plano Empresa?</p>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+      
+            <div class="w-full lg:w-1/2 mt-12 lg:mt-0">
+              <h3 class="text-3xl font-bold mb-8 text-gray-900 dark:text-white">
+                Recursos do Chatbot
+              </h3>
+              <ul class="space-y-6">
+                <li class="flex items-center bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md transition duration-300 hover:shadow-lg">
+                  <svg class="w-8 h-8 mr-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  <span class="text-lg text-gray-800 dark:text-gray-200">Respostas rápidas e precisas</span>
+                </li>
+                <li class="flex items-center bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md transition duration-300 hover:shadow-lg">
+                  <svg class="w-8 h-8 mr-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  <span class="text-lg text-gray-800 dark:text-gray-200">Personalização de acordo com sua marca</span>
+                </li>
+                <li class="flex items-center bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md transition duration-300 hover:shadow-lg">
+                  <svg class="w-8 h-8 mr-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  <span class="text-lg text-gray-800 dark:text-gray-200">Integração com múltiplas plataformas</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Onde Utilizar -->
+
+      <section id="onde-utilizar" class="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
+              Onde <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Utilizar</span>
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Descubra como a SnakeAssist pode revolucionar diferentes áreas do seu negócio.
+            </p>
+          </div>
+      
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            <!-- Suporte Técnico -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+              <div class="p-8">
+                <div class="flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full mb-6 mx-auto">
+                  <svg class="w-8 h-8 text-blue-600 dark:text-blue-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+                  Suporte Técnico
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 text-center">
+                  Ofereça suporte técnico 24/7 com respostas rápidas e precisas para as dúvidas mais comuns dos clientes.
+                </p>
+              </div>
+            </div>
+      
+            <!-- Marketing -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+              <div class="p-8">
+                <div class="flex items-center justify-center w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full mb-6 mx-auto">
+                  <svg class="w-8 h-8 text-purple-600 dark:text-purple-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+                  Marketing
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 text-center">
+                  Automatize campanhas de marketing, colete leads e forneça informações sobre produtos e serviços de forma interativa.
+                </p>
+              </div>
+            </div>
+      
+            <!-- Vendas -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+              <div class="p-8">
+                <div class="flex items-center justify-center w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full mb-6 mx-auto">
+                  <svg class="w-8 h-8 text-green-600 dark:text-green-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+                  Vendas
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 text-center">
+                  Qualifique leads, responda a perguntas sobre produtos e guie os clientes pelo processo de compra, aumentando as conversões.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section SnakeAnalitic -->
+
+      <section id="snakeanalitic" class="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
+              Snake<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Analitic</span>: Insights Poderosos
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Um painel de relatórios completo para visualização do fluxo de serviço, mensagens e faturamento de vendas.
+            </p>
+          </div>
+      
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            <!-- Análise de Desempenho -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+              <div class="p-8">
+                <div class="flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full mb-6 mx-auto">
+                  <svg class="w-8 h-8 text-blue-600 dark:text-blue-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+                  Análise de Desempenho
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 text-center">
+                  Acompanhe métricas chave como tempo de resposta, taxa de resolução e satisfação do cliente.
+                </p>
+              </div>
+            </div>
+      
+            <!-- Análise de Mensagens -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+              <div class="p-8">
+                <div class="flex items-center justify-center w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full mb-6 mx-auto">
+                  <svg class="w-8 h-8 text-purple-600 dark:text-purple-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                    <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+                  Análise de Mensagens
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 text-center">
+                  Entenda os tópicos mais frequentes e a eficácia das respostas automatizadas.
+                </p>
+              </div>
+            </div>
+      
+            <!-- Faturamento de Vendas -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+              <div class="p-8">
+                <div class="flex items-center justify-center w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full mb-6 mx-auto">
+                  <svg class="w-8 h-8 text-green-600 dark:text-green-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+                  Faturamento de Vendas
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 text-center">
+                  Acompanhe o impacto direto do chatbot nas suas vendas e conversões.
+                </p>
+              </div>
+            </div>
+          </div>
+      
+          <!-- Added: Interactive Demo -->
+          <div class="mt-16 bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+            <div class="p-8">
+              <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+                Experimente o SnakeAnalitic
+              </h3>
+              <div class="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div class="bg-white dark:bg-gray-600 p-4 rounded-lg shadow">
+                    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Taxa de Resolução</h4>
+                    <p class="text-3xl font-bold text-blue-600 dark:text-blue-400">95%</p>
+                  </div>
+                  <div class="bg-white dark:bg-gray-600 p-4 rounded-lg shadow">
+                    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Tempo Médio de Resposta</h4>
+                    <p class="text-3xl font-bold text-purple-600 dark:text-purple-400">30s</p>
+                  </div>
+                  <div class="bg-white dark:bg-gray-600 p-4 rounded-lg shadow">
+                    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Aumento nas Vendas</h4>
+                    <p class="text-3xl font-bold text-green-600 dark:text-green-400">+25%</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section CTA -->
+      <section class="bg-gradient-to-b from-blue-100 to-white dark:from-gray-900 dark:to-gray-800 py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+          <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+            <div class="p-8 sm:p-12">
+              <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-6 text-center">
+                Pronto para revolucionar seu atendimento?
+              </h2>
+              <p class="text-xl text-gray-600 dark:text-gray-300 mb-8 text-center">
+                Comece a usar o SnakeAssist hoje e junte-se a nós para melhorar a satisfação dos seus clientes e aumentar as vendas.
+              </p>
+              <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="#contact" class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                  Começar agora
+                </a>
+                <a href="#pricing" class="w-full sm:w-auto inline-flex justify-center items-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-base font-medium rounded-full text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                  Ver planos
+                </a>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Como Funciona -->
+      <section id="how-it-works" class="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
+              Como <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Funciona</span>
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Descubra como a SnakeAssist transforma seu atendimento ao cliente em apenas três passos simples.
+            </p>
+          </div>
+      
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <!-- Step 1 -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+              <div class="p-8">
+                <div class="flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full mb-6 mx-auto">
+                  <svg class="w-8 h-8 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+                  1. Cadastre-se
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 text-center">
+                  Preencha o formulário e aguarde o contato dos nossos especialistas.
+                </p>
+              </div>
+            </div>
+      
+            <!-- Step 2 -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+              <div class="p-8">
+                <div class="flex items-center justify-center w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full mb-6 mx-auto">
+                  <svg class="w-8 h-8 text-purple-600 dark:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+                  2. Configure seu Chatbot
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 text-center">
+                  Personalize as respostas, fluxos de conversa e integrações de acordo com suas necessidades.
+                </p>
+              </div>
+            </div>
+      
+            <!-- Step 3 -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+              <div class="p-8">
+                <div class="flex items-center justify-center w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full mb-6 mx-auto">
+                  <svg class="w-8 h-8 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+                  3. Ative e Monitore
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 text-center">
+                  Coloque seu chatbot em ação e acompanhe seu desempenho em tempo real através do painel SnakeAnalitic.
+                </p>
+              </div>
+            </div>
+          </div>
+      
+          <!-- Added: Call to Action -->
+          <div class="mt-16 text-center">
+            <a href="#contact" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+              Comece agora
+              <svg class="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Preços -->
+
+      <section id="pricing" class="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
+              Planos para todos os <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">tamanhos de negócio</span>
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Escolha o plano que melhor se adapta às suas necessidades e comece a transformar seu atendimento hoje.
+            </p>
+          </div>
+      
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Teste Grátis Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+              <div class="p-8">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Teste Grátis</h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-6">Experimente nossos recursos por 14 dias</p>
+                <div class="flex items-baseline mb-8">
+                  <span class="text-5xl font-extrabold text-gray-900 dark:text-white">Grátis</span>
+                  <span class="ml-2 text-gray-500 dark:text-gray-400">/14 dias</span>
+                </div>
+                <ul class="mb-8 space-y-4">
+                  <li class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    1 chatbot
+                  </li>
+                  <li class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    Recursos básicos
+                  </li>
+                  <li class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    Suporte por email
+                  </li>
+                  <li class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    Sem compromisso
+                  </li>
+                </ul>
+                <a href="#contact" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg px-4 py-3 transition duration-300 ease-in-out">Começar teste grátis</a>
+              </div>
+            </div>
+      
+            <!-- Starter Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+              <div class="p-8">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Starter</h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-6">Melhor opção para pequenas empresas e startups.</p>
+                <div class="flex items-baseline mb-8">
+                  <span class="text-5xl font-extrabold text-gray-900 dark:text-white">R$60</span>
+                  <span class="ml-2 text-gray-500 dark:text-gray-400">/mês</span>
+                </div>
+                <ul class="mb-8 space-y-4">
+                  <li class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    1 chatbot
+                  </li>
+                  <li class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    1.000 interações/mês
+                  </li>
+                  <li class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    Suporte 24/7
+                  </li>
+                  <li class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    Integrações básicas
+                  </li>
+                </ul>
+                <a href="#contact" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg px-4 py-3 transition duration-300 ease-in-out">Começar</a>
+              </div>
+            </div>
+      
+            <!-- Empresa Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+              <div class="p-8">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Empresa</h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-6">Relevante para múltiplos usuários, suporte premium.</p>
+                <div class="flex items-baseline mb-8">
+                  <span class="text-5xl font-extrabold text-gray-900 dark:text-white">R$200</span>
+                  <span class="ml-2 text-gray-500 dark:text-gray-400">/mês</span>
+                </div>
+                <ul class="mb-8 space-y-4">
+                  <li class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    5 chatbots
+                  </li>
+                  <li class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    20.000 interações/mês
+                  </li>
+                  <li class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    Suporte 24/7
+                  </li>
+                  <li class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    Integrações avançadas
+                  </li>
+                </ul>
+                <a href="#contact" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg px-4 py-3 transition duration-300 ease-in-out">Começar</a>
+              </div>
+            </div>
+      
+            <!-- Personalizado Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
+              <div class="p-8">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Personalizado</h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-6">Soluções personalizadas para grandes empresas.</p>
+                <div class="flex items-baseline mb-8">
+                  <span class="text-5xl font-extrabold text-gray-900 dark:text-white">Consultar</span>
+                </div>
+                <ul class="mb-8 space-y-4">
+                  <li class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    Chatbots ilimitados
+                  </li>
+                  <li class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    Interações ilimitadas
+                  </li>
+                  <li class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    Suporte VIP
+                  </li>
+                  <li class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    Soluções sob medida
+                  </li>
+                </ul>
+                <a href="#contact" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg px-4 py-3 transition duration-300 ease-in-out">Contate-nos</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Contato -->
+
+      <section id="contact" class="bg-gradient-to-b from-gray-100 to-white dark:from-gray-900 dark:to-gray-800 py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
+            <div class="p-8 sm:p-12">
+              <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white text-center mb-8">Fale com um Especialista</h2>
+              <div class="flex flex-col lg:flex-row gap-12">
+                <div class="w-full lg:w-1/2">
+                  <form id="signup-form" class="space-y-6" action="https://ldt2kp-3000.csb.app/submit">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nome*</label>
+                        <input type="text" id="name" name="name" placeholder="Seu nome" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                      </div>
+                      <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">E-mail corporativo*</label>
+                        <input type="email" id="email" name="email" placeholder="nome@empresa.com" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                      </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Celular*</label>
+                        <input type="tel" id="phone" name="phone" placeholder="Ex: 1198765-4321" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                      </div>
+                      <div>
+                        <label for="job" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Qual é o seu cargo?*</label>
+                        <input type="text" id="job" name="job" placeholder="Seu cargo" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                      </div>
+                    </div>
+                    <div>
+                      <label for="segment" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Segmento*</label>
+                      <select id="segment" name="segment" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option value="">Selecione um segmento</option>
+                        <option value="tecnologia">Tecnologia</option>
+                        <option value="financas">Finanças</option>
+                        <option value="saude">Saúde</option>
+                        <option value="educacao">Educação</option>
+                        <option value="varejo">Varejo</option>
+                        <option value="outro">Outro</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label for="website" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Site da empresa</label>
+                      <input type="name" id="website" name="website" placeholder="www.exemplo.com.br" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Plano de Interesse*</label>
+                      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <label class="relative flex items-center justify-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 group">
+                          <input type="radio" name="plan" value="teste-gratis" class="sr-only peer" required>
+                          <span class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">Teste Grátis</span>
+                          <span class="absolute inset-0 border-2 border-transparent peer-checked:border-blue-500 rounded-lg transition-all duration-300"></span>
+                          <span class="absolute inset-0 bg-blue-50 dark:bg-blue-900 opacity-0 peer-checked:opacity-20 rounded-lg transition-all duration-300"></span>
+                        </label>
+                        <label class="relative flex items-center justify-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 group">
+                          <input type="radio" name="plan" value="starter" class="sr-only peer">
+                          <span class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">Starter</span>
+                          <span class="absolute inset-0 border-2 border-transparent peer-checked:border-blue-500 rounded-lg transition-all duration-300"></span>
+                          <span class="absolute inset-0 bg-blue-50 dark:bg-blue-900 opacity-0 peer-checked:opacity-20 rounded-lg transition-all duration-300"></span>
+                        </label>
+                        <label class="relative flex items-center justify-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 group">
+                          <input type="radio" name="plan" value="empresa" class="sr-only peer">
+                          <span class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">Empresa</span>
+                          <span class="absolute inset-0 border-2 border-transparent peer-checked:border-blue-500 rounded-lg transition-all duration-300"></span>
+                          <span class="absolute inset-0 bg-blue-50 dark:bg-blue-900 opacity-0 peer-checked:opacity-20 rounded-lg transition-all duration-300"></span>
+                        </label>
+                        <label class="relative flex items-center justify-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 group">
+                          <input type="radio" name="plan" value="personalizado" class="sr-only peer">
+                          <span class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">Personalizado</span>
+                          <span class="absolute inset-0 border-2 border-transparent peer-checked:border-blue-500 rounded-lg transition-all duration-300"></span>
+                          <span class="absolute inset-0 bg-blue-50 dark:bg-blue-900 opacity-0 peer-checked:opacity-20 rounded-lg transition-all duration-300"></span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="flex items-start">
+                      <input id="terms" type="checkbox" name="terms" required class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                      <label for="terms" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                        Eu concordo em receber comunicações, convites e ofertas via e-mail e WhatsApp do grupo SnakeAssist. Autorizo o uso dos meus dados para experiências personalizadas. Cancelamento disponível a qualquer momento.
+                      </label>
+                    </div>
+                    <div class="h-captcha" data-sitekey="YOUR_SITE_KEY"></div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                      Enviar
+                    </button>
+                  </form>
+                </div>
+                <div class="w-full lg:w-1/2 mt-12 lg:mt-0">
+                  <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-8">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Por que escolher SnakeAssist?</h3>
+                    <ul class="space-y-4">
+                      <li class="flex items-start">
+                        <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <span class="text-gray-700 dark:text-gray-300">Chatbots inteligentes com IA avançada</span>
+                      </li>
+                      <li class="flex items-start">
+                        <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <span class="text-gray-700 dark:text-gray-300">Personalização completa para sua marca</span>
+                      </li>
+                      <li class="flex items-start">
+                        <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <span class="text-gray-700 dark:text-gray-300">Integração multicanal (site, WhatsApp, Facebook)</span>
+                      </li>
+                      <li class="flex items-start">
+                        <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <span class="text-gray-700 dark:text-gray-300">Análise de desempenho em tempo real</span>
+                      </li>
+                      <li class="flex items-start">
+                        <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <span class="text-gray-700 dark:text-gray-300">Suporte técnico especializado 24/7</span>
+                      </li>
+                    </ul>
+                    <div class="mt-8 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg">
+                      <p class="text-blue-800 dark:text-blue-200 font-bold mb-2">Experimente gratuitamente por 14 dias.</p>
+                      <p class="text-blue-600 dark:text-blue-300">Não é necessário cartão de crédito.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Section footer -->
+
+    <footer class="bg-gradient-to-b from-gray-100 to-white dark:from-gray-900 dark:to-gray-800 pt-12 pb-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div class="col-span-1 md:col-span-2">
+            <a href="#Navbar" class="flex items-center mb-4">
+              <span class="self-center text-2xl font-semibold whitespace-nowrap text-gray-900 dark:text-white">
+                <img src="SnakeAssist_logo23.png" id="Logo" alt="SnakeAssist Logo" class="h-24 w-auto">
+              </span>
+            </a>
+            <h5 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Technology & Communication</h5>
+            <p class="text-gray-600 dark:text-gray-400 mb-6">Transformando o atendimento ao cliente com chatbots inteligentes e soluções personalizadas.</p>
+          </div>
+          
+          <div>
+            <h2 class="text-lg font-semibold text-gray-900 uppercase dark:text-white mb-4">Serviços</h2>
+            <ul class="space-y-2">
+              <li>
+                <a href="#pricing" class="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors duration-300">Chatbots</a>
+              </li>
+              <li>
+                <a href="https://j5pjh8.csb.app/" target="_blank" class="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors duration-300">SnakeDevelop</a>
+              </li>
+            </ul>
+          </div>
+          
+          <div>
+            <h2 class="text-lg font-semibold text-gray-900 uppercase dark:text-white mb-4">Empresa</h2>
+            <ul class="space-y-2">
+              <li>
+                <a href="#modalContent" class="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors duration-300" id="aboutLink">Sobre Nós</a>
+              </li>
+              <li>
+                <a href="#modalContent" class="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors duration-300" id="teamLink">Equipe</a>
+              </li>
+              <li>
+                <a href="#modalContent" class="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors duration-300" id="privacyLink">Política de Privacidade</a>
+              </li>
+              <li>
+                <a href="#modalContent" class="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors duration-300" id="termsLink">Termos & Condições</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <hr class="my-8 border-gray-200 dark:border-gray-700">
+        
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <span class="text-sm text-gray-500 dark:text-gray-400 mb-4 md:mb-0">
+            © 2024 <a href="#" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300">SnakeAssist™</a>. Todos os direitos reservados.
+          </span>
+          <div class="flex space-x-6">
+            <a href="#" class="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300">
+              <span class="sr-only">Facebook</span>
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" />
+              </svg>
+            </a>
+            <a href="#" class="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300">
+              <span class="sr-only">Instagram</span>
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" />
+              </svg>
+            </a>
+            <a href="#" class="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300">
+              <span class="sr-only">LinkedIn</span>
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  <!-- Modal Background -->
+<div id="modalBackground" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 transition-opacity duration-300 ease-in-out">
+  <!-- Modal Content -->
+  <div id="modalContent" class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl max-w-3xl w-full mx-4 max-h-[90vh] flex flex-col overflow-hidden transition-all duration-300 ease-in-out transform scale-95 opacity-0">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+      <h2 id="modalTitle" class="text-2xl font-bold text-gray-900 dark:text-white"></h2>
+      <button id="closeModalX" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800" aria-label="Close modal">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    <!-- Modal Body -->
+    <div class="flex-grow overflow-y-auto p-6">
+      <div id="modalText" class="text-gray-700 dark:text-gray-300 space-y-4"></div>
+    </div>
+    <!-- Modal Footer -->
+    <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
+      <button id="closeModalBtn" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+        Fechar
+      </button>
+    </div>
+  </div>
+</div>
+<style>
+  .modal-open {
+    overflow: hidden;
+  }
+  
+  #modalContent {
+    max-height: calc(100vh - 2rem);
+  }
+  
+  #modalBackground.flex #modalContent {
+    opacity: 1;
+    transform: scale(1);
+  }
+</style>
+
+ <!-- alert -->
+
+ <div id="custom-alert" class="hidden fixed inset-0 flex items-center justify-center z-50">
+  <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative max-w-sm w-full">
+    <span id="alert-message" class="block sm:inline"></span>
+    <button onclick="closeAlert()" class="absolute top-0 right-0 m-2 text-red-500 hover:text-red-700">
+      &times;
+    </button>
+  </div>
+</div>
+
+<div id="alert" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg text-center">
+  <h2 class="text-xl font-semibold mb-4">Obrigado por se inscrever!</h2>
+  <p class="text-gray-700 mb-4">Entraremos em contato em breve.</p>
+  <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onclick="closeAlert()">OK</button>
+</div>
+
+    <script>
+      // Alternar modo escuro
+      const darkModeToggle = document.getElementById("darkModeToggle");
+      const htmlElement = document.documentElement;
+      const darkIcon = document.getElementById("darkIcon");
+      const lightIcon = document.getElementById("lightIcon");
+
+            if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark');
+        darkIcon.classList.remove('hidden');
+        lightIcon.classList.add('hidden');
+      } else {
+        document.documentElement.classList.remove('dark');
+        darkIcon.classList.add('hidden');
+        lightIcon.classList.remove('hidden');
+        }
+
+        darkModeToggle.addEventListener('click', () => {
+          document.documentElement.classList.toggle('dark');
+          if (document.documentElement.classList.contains('dark')) {
+            localStorage.setItem('theme', 'dark');
+            darkIcon.classList.remove('hidden');
+            lightIcon.classList.add('hidden');
+          } else {
+            localStorage.setItem('theme', 'light');
+            darkIcon.classList.add('hidden');
+            lightIcon.classList.remove('hidden');
+          }
+        });
+
+      // Alternar menu móvel
+      const mobileMenuButton = document.querySelector(
+        '[data-collapse-toggle="navbar-sticky"]'
+      );
+      const mobileMenu = document.getElementById("navbar-sticky");
+
+      mobileMenuButton.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
+
+      // Rolagem suave para links âncora
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          document.querySelector(this.getAttribute("href")).scrollIntoView({
+            behavior: "smooth",
+          });
+        });
+      });
+
+      // Envio de formulário
+      document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('signup-form');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    fetch('https://rxkyph-53835.csb.app/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(errorData => {
+          throw new Error(`Erro de API: ${response.status} - ${errorData.message || response.statusText}`);
+        });
+      }
+      return response.json();
+    })
+    .then(result => {
+      console.log('Sucesso:', result);
+      alert('Obrigado por se inscrever! Entraremos em contato em breve.');
+      form.reset();
+    })
+    .catch(error => {
+      if (error.name === 'TypeError') {
+        console.error('Erro de rede ou CORS: ', error.message);
+        showAlert('Erro de conexão. Verifique sua internet ou se a API está acessível.');
+      } else if (error.message.includes('Erro de API')) {
+        console.error(error.message);
+        showAlert('Houve um erro no servidor: ' + error.message);
+      } else {
+        console.error('Erro inesperado:', error);
+        showAlert('Ocorreu um erro inesperado. Tente novamente mais tarde.');
+      }
+    });
+  });
+});
+
+// função alert
+
+function showAlert(message) {
+  const alertBox = document.getElementById('custom-alert');
+  const alertMessage = document.getElementById('alert-message');
+  alertMessage.textContent = message;
+  alertBox.classList.remove('hidden');
+}
+
+function closeAlert() {
+  document.getElementById('custom-alert').classList.add('hidden');
+}
+
+
+  // Função Modal
+  const aboutLink = document.getElementById('aboutLink');
+  const teamLink = document.getElementById('teamLink');
+  const privacyLink = document.getElementById('privacyLink');
+  const termsLink = document.getElementById('termsLink');
+  const modalBackground = document.getElementById('modalBackground');
+  const modalContent = document.getElementById('modalContent');
+  const closeModalX = document.getElementById('closeModalX');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalText = document.getElementById('modalText');
+
+  const aboutUs = `
+    <p class="mb-4">A SnakeAssist é uma empresa inovadora especializada no desenvolvimento de chatbots inteligentes e soluções de atendimento ao cliente automatizado. Nossa missão é transformar a maneira como as empresas interagem com seus clientes, proporcionando experiências personalizadas e eficientes.</p>
+    <p class="mb-4">Fundada por um grupo de desenvolvedores apaixonados por tecnologia e experiência do usuário, a SnakeAssist combina expertise técnica com uma profunda compreensão das necessidades do mercado.</p>
+    <p>Nosso compromisso é fornecer soluções de ponta que não apenas atendam, mas superem as expectativas de nossos clientes, impulsionando seu sucesso no mundo digital em constante evolução.</p>
+  `;
+
+  const team = `
+    <p class="mb-6">A equipe da SnakeAssist é formada por 4 Fundadores que são os próprios desenvolvedores, cada um trazendo expertise única para nossa plataforma:</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg flex items-start space-x-4">
+        <img src="https://via.placeholder.com/100" alt="Brendo Teles" class="w-24 h-24 rounded-full object-cover">
+        <div>
+          <h3 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Brendo Teles</h3>
+          <p class="text-gray-700 dark:text-gray-300 mb-4">Formado em Análise e Desenvolvimento de Sistemas. Responsável pelo desenvolvimento Back-end e API da SnakeAssist.</p>
+          <div class="flex space-x-3">
+            <a href="#" class="text-gray-400 hover:text-blue-500 dark:hover:text-blue-400">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-pink-500 dark:hover:text-pink-400">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" />
+              </svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-900 dark:hover:text-white">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg flex items-start space-x-4">
+        <img src="https://via.placeholder.com/100" alt="Felipe Dias" class="w-24 h-24 rounded-full object-cover">
+        <div>
+          <h3 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Felipe Dias</h3>
+          <p class="text-gray-700 dark:text-gray-300 mb-4">Formado em Sistemas da Informação. Especialista em Banco de Dados da SnakeAssist.</p>
+          <div class="flex space-x-3">
+            <a href="#" class="text-gray-400 hover:text-blue-500 dark:hover:text-blue-400">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-pink-500 dark:hover:text-pink-400">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" />
+              </svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-900 dark:hover:text-white">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg flex items-start space-x-4">
+        <img src="https://via.placeholder.com/100" alt="João Carvalho" class="w-24 h-24 rounded-full object-cover">
+        <div>
+          <h3 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">João Carvalho</h3>
+          <p class="text-gray-700 dark:text-gray-300 mb-4">Formado em Análise e Desenvolvimento de Sistemas. Responsável pelo desenvolvimento Front-End da SnakeAssist.</p>
+          <div class="flex space-x-3">
+            <a href="#" class="text-gray-400 hover:text-blue-500 dark:hover:text-blue-400">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-pink-500 dark:hover:text-pink-400">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" />
+              </svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-900 dark:hover:text-white">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg flex items-start space-x-4">
+        <img src="https://via.placeholder.com/100" alt="Hugo Mota" class="w-24 h-24 rounded-full object-cover">
+        <div>
+          <h3 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Hugo Mota</h3>
+          <p class="text-gray-700 dark:text-gray-300 mb-4">Formado em Segurança da Informação. Responsável pelo Front-End, Painel de Gerenciamento, SnakeAnalitic e Segurança na aplicação Snake.</p>
+          <div class="flex space-x-3">
+            <a href="#" class="text-gray-400 hover:text-blue-500 dark:hover:text-blue-400">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-pink-500 dark:hover:text-pink-400">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" />
+              </svg>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-900 dark:hover:text-white">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const privacyPolicy = `
+    <p class="mb-4">A sua privacidade é importante para nós. É política do SnakeAssist respeitar a sua privacidade em relação a qualquer informação sua que possamos coletar no site SnakeAssist, e outros sites que possuímos e operamos.</p>
+    <p class="mb-4">Solicitamos informações pessoais apenas quando realmente precisamos delas para lhe fornecer um serviço. Fazemo-lo por meios justos e legais, com o seu conhecimento e consentimento. Também informamos por que estamos coletando e como será usado.</p>
+    <p class="mb-4">Apenas retemos as informações coletadas pelo tempo necessário para fornecer o serviço solicitado. Quando armazenamos dados, protegemos dentro de meios comercialmente aceitáveis para evitar perdas e roubos, bem como acesso, divulgação, cópia, uso ou modificação não autorizados.</p>
+    <p class="mb-4">Não compartilhamos informações de identificação pessoal publicamente ou com terceiros, exceto quando exigido por lei.</p>
+    <p>O nosso site pode ter links para sites externos que não são operados por nós. Esteja ciente de que não temos controle sobre o conteúdo e práticas desses sites e não podemos aceitar responsabilidade por suas respectivas políticas de privacidade.</p>
+  `;
+
+  const termsAndConditions = `
+    <p class="mb-4">Ao acessar o site SnakeAssist, concorda em cumprir estes termos de serviço, todas as leis e regulamentos aplicáveis e concorda que é responsável pelo cumprimento de todas as leis locais aplicáveis. Se você não concordar com algum desses termos, está proibido de usar ou acessar este site. Os materiais contidos neste site são protegidos pelas leis de direitos autorais e marcas comerciais aplicáveis.</p>
+    <p class="mb-4">É concedida permissão para baixar temporariamente uma cópia dos materiais (informações ou software) no site SnakeAssist , apenas para visualização transitória pessoal e não comercial. Esta é a concessão de uma licença, não uma transferência de título e, sob esta licença, você não pode:</p>
+    <ul class="list-disc pl-6 mb-4">
+      <li>modificar ou copiar os materiais;</li>
+      <li>usar os materiais para qualquer finalidade comercial ou para exibição pública (comercial ou não comercial);</li>
+      <li>tentar descompilar ou fazer engenharia reversa de qualquer software contido no site SnakeAssist;</li>
+      <li>remover quaisquer direitos autorais ou outras notações de propriedade dos materiais; ou</li>
+      <li>transferir os materiais para outra pessoa ou 'espelhar' os materiais em qualquer outro servidor.</li>
+    </ul>
+    <p>Esta licença será automaticamente rescindida se você violar alguma dessas restrições e poderá ser rescindida por SnakeAssist a qualquer momento. Ao encerrar a visualização desses materiais ou após o término desta licença, você deve apagar todos os materiais baixados em sua posse, seja em formato eletrónico ou impresso.</p>
+  `;
+
+  function openModal(title, content) {
+    modalTitle.textContent = title;
+    modalText.innerHTML = content;
+    modalBackground.classList.remove('hidden');
+    modalBackground.classList.add('flex');
+    document.body.classList.add('modal-open');
+  }
+  
+
+  function closeModalFunc() {
+    modalBackground.classList.add('hidden');
+    modalBackground.classList.remove('flex');
+    document.body.style.overflow = 'auto';
+    document.body.classList.remove('modal-open');
+  }
+  
+
+  aboutLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal('Sobre Nós', aboutUs);
+  });
+
+  teamLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal('Nossa Equipe', team);
+  });
+
+  privacyLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal('Política de Privacidade', privacyPolicy);
+  });
+
+  termsLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal('Termos & Condições', termsAndConditions);
+  });
+
+  closeModalX.addEventListener('click', closeModalFunc);
+  closeModalBtn.addEventListener('click', closeModalFunc);
+  modalBackground.addEventListener('click', (e) => {
+    if (e.target === modalBackground) {
+      closeModalFunc();
+    }
+  });
+
+  // Fechar modal com tecla Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modalBackground.classList.contains('hidden')) {
+      closeModalFunc();
+    }
+  });
+        </script>
+
+      </body>
+</html>
